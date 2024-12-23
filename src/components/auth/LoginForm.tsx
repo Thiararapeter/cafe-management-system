@@ -2,31 +2,16 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { useNavigate } from "react-router-dom";
-import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-  const { toast } = useToast();
+  const { login } = useAuth();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Mock login - replace with actual authentication
-    if (username === "admin" && password === "admin") {
-      toast({
-        title: "Login successful",
-        description: "Welcome back!",
-      });
-      navigate("/dashboard");
-    } else {
-      toast({
-        title: "Login failed",
-        description: "Invalid credentials",
-        variant: "destructive",
-      });
-    }
+    await login(username, password);
   };
 
   return (
@@ -54,6 +39,12 @@ const LoginForm = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="hover-scale"
             />
+          </div>
+          <div className="text-sm text-muted-foreground">
+            <p>Demo Credentials:</p>
+            <p>Cashier: cashier / cashier123</p>
+            <p>Admin: admin / admin123</p>
+            <p>Owner: owner / owner123</p>
           </div>
         </CardContent>
         <CardFooter>
