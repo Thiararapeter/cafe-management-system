@@ -25,12 +25,13 @@ import {
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { UserPlus, Pencil, Trash2 } from "lucide-react";
+import { UserRole } from "@/types/auth";
 
 interface User {
   id: string;
   name: string;
   username: string;
-  role: "cashier" | "admin" | "owner";
+  role: UserRole;
 }
 
 const UserManagement = () => {
@@ -59,7 +60,7 @@ const UserManagement = () => {
   const [newUser, setNewUser] = useState({
     name: "",
     username: "",
-    role: "cashier" as const,
+    role: "cashier" as UserRole,
   });
 
   const handleAddUser = () => {
@@ -112,7 +113,7 @@ const UserManagement = () => {
               />
               <Select
                 value={newUser.role}
-                onValueChange={(value: "cashier" | "admin" | "owner") =>
+                onValueChange={(value: UserRole) =>
                   setNewUser({ ...newUser, role: value })
                 }
               >
