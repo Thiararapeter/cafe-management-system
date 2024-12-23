@@ -36,7 +36,7 @@ const Settings = () => {
                 </div>
               </TabsContent>
             )}
-          </CardContent>
+          </Tabs>
         </CardContent>
       </Card>
     </div>
