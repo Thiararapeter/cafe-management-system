@@ -22,6 +22,8 @@ import { useToast } from "@/hooks/use-toast";
 import { Product } from "@/types/inventory";
 import ProductForm from "@/components/inventory/ProductForm";
 import ProductList from "@/components/inventory/ProductList";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import MenuManagement from "@/components/settings/MenuManagement";
 
 // Mock data - replace with actual API calls in production
 const mockProducts: Product[] = Array.from({ length: 50 }, (_, i) => ({
@@ -113,18 +115,26 @@ const Inventory = () => {
       </div>
 
       <Card className="glass-card">
-        <CardHeader>
-          <CardTitle>Products</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ProductList
-            products={currentProducts}
-            onEdit={openEditDialog}
-            onDelete={openDeleteDialog}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
+        <CardContent className="p-6">
+          <Tabs defaultValue="inventory" className="space-y-4">
+            <TabsList>
+              <TabsTrigger value="inventory">Inventory</TabsTrigger>
+              <TabsTrigger value="menu">Menu</TabsTrigger>
+            </TabsList>
+            <TabsContent value="inventory">
+              <ProductList
+                products={currentProducts}
+                onEdit={openEditDialog}
+                onDelete={openDeleteDialog}
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={setCurrentPage}
+              />
+            </TabsContent>
+            <TabsContent value="menu">
+              <MenuManagement />
+            </TabsContent>
+          </Tabs>
         </CardContent>
       </Card>
 

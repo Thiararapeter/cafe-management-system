@@ -2,7 +2,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Settings as SettingsIcon } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import UserManagement from "@/components/settings/UserManagement";
-import MenuManagement from "@/components/settings/MenuManagement";
+import CafeSettings from "@/components/settings/CafeSettings";
 import { useAuth } from "@/contexts/AuthContext";
 
 const Settings = () => {
@@ -20,14 +20,14 @@ const Settings = () => {
           <Tabs defaultValue="users" className="space-y-4">
             <TabsList>
               <TabsTrigger value="users">Users</TabsTrigger>
-              <TabsTrigger value="menu">Menu</TabsTrigger>
+              <TabsTrigger value="cafe">Cafe Settings</TabsTrigger>
               {isOwner && <TabsTrigger value="system">System</TabsTrigger>}
             </TabsList>
             <TabsContent value="users">
               <UserManagement />
             </TabsContent>
-            <TabsContent value="menu">
-              <MenuManagement />
+            <TabsContent value="cafe">
+              <CafeSettings />
             </TabsContent>
             {isOwner && (
               <TabsContent value="system">
