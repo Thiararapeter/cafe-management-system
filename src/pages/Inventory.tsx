@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Package, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -22,8 +22,6 @@ import { useToast } from "@/hooks/use-toast";
 import { Product } from "@/types/inventory";
 import ProductForm from "@/components/inventory/ProductForm";
 import ProductList from "@/components/inventory/ProductList";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import MenuManagement from "@/components/settings/MenuManagement";
 
 // Mock data - replace with actual API calls in production
 const mockProducts: Product[] = Array.from({ length: 50 }, (_, i) => ({
@@ -110,31 +108,19 @@ const Inventory = () => {
             <Plus className="h-4 w-4 mr-2" />
             Add Product
           </Button>
-          <Package className="h-8 w-8 text-muted-foreground" />
         </div>
       </div>
 
-      <Card className="glass-card">
+      <Card>
         <CardContent className="p-6">
-          <Tabs defaultValue="inventory" className="space-y-4">
-            <TabsList>
-              <TabsTrigger value="inventory">Inventory</TabsTrigger>
-              <TabsTrigger value="menu">Menu</TabsTrigger>
-            </TabsList>
-            <TabsContent value="inventory">
-              <ProductList
-                products={currentProducts}
-                onEdit={openEditDialog}
-                onDelete={openDeleteDialog}
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={setCurrentPage}
-              />
-            </TabsContent>
-            <TabsContent value="menu">
-              <MenuManagement />
-            </TabsContent>
-          </Tabs>
+          <ProductList
+            products={currentProducts}
+            onEdit={openEditDialog}
+            onDelete={openDeleteDialog}
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
         </CardContent>
       </Card>
 
