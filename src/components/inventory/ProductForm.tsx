@@ -9,6 +9,13 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useForm } from "react-hook-form";
 import { Product } from "@/types/inventory";
 import { useToast } from "@/hooks/use-toast";
@@ -18,6 +25,8 @@ interface ProductFormProps {
   initialData?: Product;
   onCancel?: () => void;
 }
+
+const CATEGORIES = ["Coffee", "Pastries", "Food", "Beverages"];
 
 const ProductForm = ({ onSubmit, initialData, onCancel }: ProductFormProps) => {
   const { toast } = useToast();
@@ -112,9 +121,23 @@ const ProductForm = ({ onSubmit, initialData, onCancel }: ProductFormProps) => {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Category</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Product category" />
-              </FormControl>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {CATEGORIES.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}
