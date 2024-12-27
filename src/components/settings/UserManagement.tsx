@@ -57,20 +57,44 @@ const UserManagement = () => {
     },
   ]);
 
-  const [newUser, setNewUser] = useState({
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | null>(null);
+  const [editedUser, setEditedUser] = useState({
     name: "",
     username: "",
     role: "cashier" as UserRole,
   });
 
-  const handleAddUser = () => {
-    const id = (users.length + 1).toString();
-    setUsers([...users, { ...newUser, id }]);
-    toast({
-      title: "User added",
-      description: `${newUser.name} has been added as a ${newUser.role}`,
+  const handleEditUser = (user: User) => {
+    setSelectedUser(user);
+    setEditedUser({
+      name: user.name,
+      username: user.username,
+      role: user.role,
     });
-    setNewUser({ name: "", username: "", role: "cashier" });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdateUser = () => {
+    if (!selectedUser) return;
+
+    const updatedUsers = users.map((user) =>
+      user.id === selectedUser.id
+        ? { ...user, ...editedUser }
+        : user
+    );
+
+    setUsers(updatedUsers);
+    setIsEditDialogOpen(false);
+    setSelectedUser(null);
+    toast({
+      title: "User updated",
+      description: `${editedUser.name}'s information has been updated`,
+    });
+  };
+
+  const handleAddUser = () => {
+    // Add user logic here
   };
 
   const handleDeleteUser = (id: string) => {
@@ -93,28 +117,25 @@ const UserManagement = () => {
             </Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add New User</DialogTitle>
-            </DialogHeader>
             <div className="space-y-4">
               <Input
                 placeholder="Name"
-                value={newUser.name}
+                value={editedUser.name}
                 onChange={(e) =>
-                  setNewUser({ ...newUser, name: e.target.value })
+                  setEditedUser({ ...editedUser, name: e.target.value })
                 }
               />
               <Input
                 placeholder="Username"
-                value={newUser.username}
+                value={editedUser.username}
                 onChange={(e) =>
-                  setNewUser({ ...newUser, username: e.target.value })
+                  setEditedUser({ ...editedUser, username: e.target.value })
                 }
               />
               <Select
-                value={newUser.role}
+                value={editedUser.role}
                 onValueChange={(value: UserRole) =>
-                  setNewUser({ ...newUser, role: value })
+                  setEditedUser({ ...editedUser, role: value })
                 }
               >
                 <SelectTrigger>
@@ -154,12 +175,7 @@ const UserManagement = () => {
                   variant="ghost"
                   size="icon"
                   className="mr-2"
-                  onClick={() =>
-                    toast({
-                      title: "Edit user",
-                      description: "This feature will be implemented soon",
-                    })
-                  }
+                  onClick={() => handleEditUser(user)}
                 >
                   <Pencil className="h-4 w-4" />
                 </Button>
@@ -175,6 +191,48 @@ const UserManagement = () => {
           ))}
         </TableBody>
       </Table>
+
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit User</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Input
+              placeholder="Name"
+              value={editedUser.name}
+              onChange={(e) =>
+                setEditedUser({ ...editedUser, name: e.target.value })
+              }
+            />
+            <Input
+              placeholder="Username"
+              value={editedUser.username}
+              onChange={(e) =>
+                setEditedUser({ ...editedUser, username: e.target.value })
+              }
+            />
+            <Select
+              value={editedUser.role}
+              onValueChange={(value: UserRole) =>
+                setEditedUser({ ...editedUser, role: value })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select role" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="cashier">Cashier</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="owner">Owner</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button onClick={handleUpdateUser} className="w-full">
+              Update User
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

@@ -56,23 +56,58 @@ const MenuManagement = () => {
     },
   ]);
 
-  const [newItem, setNewItem] = useState({
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<MenuItem | null>(null);
+  const [editedItem, setEditedItem] = useState({
     name: "",
-    category: "Coffee",
+    category: "",
     price: "",
   });
+
+  const handleEditItem = (item: MenuItem) => {
+    setSelectedItem(item);
+    setEditedItem({
+      name: item.name,
+      category: item.category,
+      price: item.price.toString(),
+    });
+    setIsEditDialogOpen(true);
+  };
+
+  const handleUpdateItem = () => {
+    if (!selectedItem) return;
+
+    const updatedItems = menuItems.map((item) =>
+      item.id === selectedItem.id
+        ? {
+            ...item,
+            name: editedItem.name,
+            category: editedItem.category,
+            price: parseFloat(editedItem.price),
+          }
+        : item
+    );
+
+    setMenuItems(updatedItems);
+    setIsEditDialogOpen(false);
+    setSelectedItem(null);
+    toast({
+      title: "Menu item updated",
+      description: `${editedItem.name} has been updated`,
+    });
+  };
 
   const handleAddItem = () => {
     const id = (menuItems.length + 1).toString();
     setMenuItems([
       ...menuItems,
-      { ...newItem, id, price: parseFloat(newItem.price) },
+      { ...editedItem, id, price: parseFloat(editedItem.price) },
     ]);
     toast({
       title: "Menu item added",
-      description: `${newItem.name} has been added to the menu`,
+      description: `${editedItem.name} has been added to the menu`,
     });
-    setNewItem({ name: "", category: "Coffee", price: "" });
+    setEditedItem({ name: "", category: "Coffee", price: "" });
   };
 
   const handleDeleteItem = (id: string) => {
@@ -95,19 +130,16 @@ const MenuManagement = () => {
             </Button>
           </DialogTrigger>
           <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Add Menu Item</DialogTitle>
-            </DialogHeader>
             <div className="space-y-4">
               <Input
                 placeholder="Item name"
-                value={newItem.name}
-                onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
+                value={editedItem.name}
+                onChange={(e) => setEditedItem({ ...editedItem, name: e.target.value })}
               />
               <Select
-                value={newItem.category}
+                value={editedItem.category}
                 onValueChange={(value) =>
-                  setNewItem({ ...newItem, category: value })
+                  setEditedItem({ ...editedItem, category: value })
                 }
               >
                 <SelectTrigger>
@@ -123,8 +155,10 @@ const MenuManagement = () => {
               <Input
                 type="number"
                 placeholder="Price"
-                value={newItem.price}
-                onChange={(e) => setNewItem({ ...newItem, price: e.target.value })}
+                value={editedItem.price}
+                onChange={(e) =>
+                  setEditedItem({ ...editedItem, price: e.target.value })
+                }
               />
               <Button onClick={handleAddItem} className="w-full">
                 Add Item
@@ -154,12 +188,7 @@ const MenuManagement = () => {
                   variant="ghost"
                   size="icon"
                   className="mr-2"
-                  onClick={() =>
-                    toast({
-                      title: "Edit item",
-                      description: "This feature will be implemented soon",
-                    })
-                  }
+                  onClick={() => handleEditItem(item)}
                 >
                   <Pencil className="h-4 w-4" />
                 </Button>
@@ -175,6 +204,50 @@ const MenuManagement = () => {
           ))}
         </TableBody>
       </Table>
+
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Menu Item</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Input
+              placeholder="Item name"
+              value={editedItem.name}
+              onChange={(e) =>
+                setEditedItem({ ...editedItem, name: e.target.value })
+              }
+            />
+            <Select
+              value={editedItem.category}
+              onValueChange={(value) =>
+                setEditedItem({ ...editedItem, category: value })
+              }
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="Coffee">Coffee</SelectItem>
+                <SelectItem value="Pastries">Pastries</SelectItem>
+                <SelectItem value="Food">Food</SelectItem>
+                <SelectItem value="Beverages">Beverages</SelectItem>
+              </SelectContent>
+            </Select>
+            <Input
+              type="number"
+              placeholder="Price"
+              value={editedItem.price}
+              onChange={(e) =>
+                setEditedItem({ ...editedItem, price: e.target.value })
+              }
+            />
+            <Button onClick={handleUpdateItem} className="w-full">
+              Update Item
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
