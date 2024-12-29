@@ -1,10 +1,10 @@
-export type UserRole = "cashier" | "admin" | "owner";
+export type UserRole = "cashier" | "admin" | "owner" | "waiter";
 
 export interface User {
   id: string;
+  name: string;
   username: string;
   role: UserRole;
-  name: string;
 }
 
 export interface AuthContextType {

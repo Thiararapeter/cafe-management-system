@@ -26,6 +26,13 @@ const MOCK_USERS = [
     role: "owner" as UserRole,
     name: "Mike Owner",
   },
+  {
+    id: "4",
+    username: "waiter",
+    password: "waiter123",
+    role: "waiter" as UserRole,
+    name: "Sam Waiter",
+  },
 ];
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);

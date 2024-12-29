@@ -23,13 +23,13 @@ const Sidebar = () => {
       title: "Dashboard",
       icon: <LayoutDashboard className="h-5 w-5" />,
       href: "/dashboard",
-      roles: ["cashier", "admin", "owner"],
+      roles: ["cashier", "admin", "owner", "waiter"],
     },
     {
       title: "Orders",
       icon: <ShoppingCart className="h-5 w-5" />,
       href: "/orders",
-      roles: ["cashier", "admin", "owner"],
+      roles: ["cashier", "admin", "owner", "waiter"],
     },
     {
       title: "Inventory",
