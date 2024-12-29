@@ -11,6 +11,7 @@ import {
   BarChart,
   LogOut,
   User,
+  Store,
 } from "lucide-react";
 
 const Sidebar = () => {
@@ -23,13 +24,19 @@ const Sidebar = () => {
       title: "Dashboard",
       icon: <LayoutDashboard className="h-5 w-5" />,
       href: "/dashboard",
-      roles: ["cashier", "admin", "owner", "waiter"],
+      roles: ["admin", "owner", "waiter"],
+    },
+    {
+      title: "POS",
+      icon: <Store className="h-5 w-5" />,
+      href: "/orders",
+      roles: ["cashier"],
     },
     {
       title: "Orders",
       icon: <ShoppingCart className="h-5 w-5" />,
       href: "/orders",
-      roles: ["cashier", "admin", "owner", "waiter"],
+      roles: ["admin", "owner", "waiter"],
     },
     {
       title: "Inventory",

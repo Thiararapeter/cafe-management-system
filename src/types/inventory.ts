@@ -5,6 +5,5 @@ export interface Product {
   price: number;
   quantity: number;
   category: string;
-  sku: string;
   createdAt: string;
 }

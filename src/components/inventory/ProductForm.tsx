@@ -37,7 +37,6 @@ const ProductForm = ({ onSubmit, initialData, onCancel }: ProductFormProps) => {
       price: 0,
       quantity: 0,
       category: "",
-      sku: "",
     },
   });
 
@@ -138,20 +137,6 @@ const ProductForm = ({ onSubmit, initialData, onCancel }: ProductFormProps) => {
                   ))}
                 </SelectContent>
               </Select>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="sku"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>SKU</FormLabel>
-              <FormControl>
-                <Input {...field} placeholder="Stock Keeping Unit" />
-              </FormControl>
               <FormMessage />
             </FormItem>
           )}
