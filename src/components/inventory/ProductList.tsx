@@ -41,7 +41,6 @@ const ProductList = ({
         <TableHeader>
           <TableRow>
             <TableHead>Name</TableHead>
-            <TableHead>SKU</TableHead>
             <TableHead>Category</TableHead>
             <TableHead className="text-right">Price</TableHead>
             <TableHead className="text-right">Quantity</TableHead>
@@ -52,7 +51,6 @@ const ProductList = ({
           {products.map((product) => (
             <TableRow key={product.id}>
               <TableCell className="font-medium">{product.name}</TableCell>
-              <TableCell>{product.sku}</TableCell>
               <TableCell>{product.category}</TableCell>
               <TableCell className="text-right">
                 ${product.price.toFixed(2)}
