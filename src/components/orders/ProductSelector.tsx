@@ -24,7 +24,7 @@ interface ProductSelectorProps {
 
 const ProductSelector = ({ products, onAddToOrder }: ProductSelectorProps) => {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   const categories = Array.from(new Set(products.map((p) => p.category)));
 
@@ -32,7 +32,7 @@ const ProductSelector = ({ products, onAddToOrder }: ProductSelectorProps) => {
     const matchesSearch = product.name
       .toLowerCase()
       .includes(searchQuery.toLowerCase());
-    const matchesCategory = !selectedCategory || product.category === selectedCategory;
+    const matchesCategory = selectedCategory === "all" || product.category === selectedCategory;
     return matchesSearch && matchesCategory;
   });
 
@@ -53,7 +53,7 @@ const ProductSelector = ({ products, onAddToOrder }: ProductSelectorProps) => {
               <SelectValue placeholder="Filter by category" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All Categories</SelectItem>
+              <SelectItem value="all">All Categories</SelectItem>
               {categories.map((category) => (
                 <SelectItem key={category} value={category}>
                   {category}
