@@ -100,25 +100,25 @@ const Orders = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Orders</h1>
         <ShoppingCart className="h-8 w-8 text-muted-foreground" />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
-        <Card>
+        <Card className="shadow-lg">
           <CardHeader>
             <CardTitle>New Order</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="space-y-6">
             <div className="space-y-2">
               <label className="text-sm font-medium">Select Product</label>
               <Select
                 value={selectedProduct}
                 onValueChange={setSelectedProduct}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="Choose a product" />
                 </SelectTrigger>
                 <SelectContent>
@@ -131,7 +131,10 @@ const Orders = () => {
               </Select>
             </div>
 
-            <Button onClick={handleAddToOrder} className="w-full">
+            <Button 
+              onClick={handleAddToOrder} 
+              className="w-full bg-green-600 hover:bg-green-700"
+            >
               Add to Order
             </Button>
 
@@ -141,7 +144,7 @@ const Orders = () => {
                 value={selectedWaiter}
                 onValueChange={setSelectedWaiter}
               >
-                <SelectTrigger>
+                <SelectTrigger className="w-full border-green-600">
                   <SelectValue placeholder="Choose a waiter" />
                 </SelectTrigger>
                 <SelectContent>
@@ -156,29 +159,35 @@ const Orders = () => {
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="shadow-lg">
           <CardHeader>
             <CardTitle>Order Summary</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            {orderItems.map((item) => {
-              const product = mockProducts.find(p => p.id === item.productId);
-              return (
-                <div key={item.productId} className="flex justify-between">
-                  <span>{product?.name} x {item.quantity}</span>
-                  <span>${((product?.price || 0) * item.quantity).toFixed(2)}</span>
-                </div>
-              );
-            })}
-            <div className="border-t pt-4">
-              <div className="flex justify-between font-bold">
+          <CardContent className="space-y-6">
+            <div className="space-y-4">
+              {orderItems.map((item) => {
+                const product = mockProducts.find(p => p.id === item.productId);
+                return (
+                  <div key={item.productId} className="flex justify-between items-center py-2 border-b">
+                    <span className="font-medium">{product?.name} x {item.quantity}</span>
+                    <span className="text-muted-foreground">
+                      ${((product?.price || 0) * item.quantity).toFixed(2)}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+            
+            <div className="pt-4">
+              <div className="flex justify-between items-center text-lg font-bold">
                 <span>Total</span>
                 <span>${calculateTotal().toFixed(2)}</span>
               </div>
             </div>
+
             <Button 
               onClick={handlePlaceOrder} 
-              className="w-full"
+              className="w-full bg-green-600 hover:bg-green-700"
               disabled={orderItems.length === 0 || !selectedWaiter}
             >
               Place Order
