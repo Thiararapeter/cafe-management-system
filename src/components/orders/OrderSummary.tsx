@@ -7,6 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { X } from "lucide-react";
 
 interface Product {
   id: string;
@@ -50,22 +51,24 @@ const OrderSummary = ({
 
   return (
     <Card className="shadow-lg">
-      <CardHeader>
-        <CardTitle>Order Summary</CardTitle>
+      <CardHeader className="py-3">
+        <CardTitle className="text-lg">Order Summary</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="space-y-4">
+      <CardContent className="space-y-4">
+        <div className="max-h-[300px] overflow-y-auto space-y-2">
           {orderItems.map((item) => {
             const product = products.find((p) => p.id === item.productId);
             return (
               <div
                 key={item.productId}
-                className="flex justify-between items-center py-2 border-b"
+                className="flex justify-between items-center py-1.5 border-b last:border-b-0"
               >
-                <span className="font-medium">
-                  {product?.name} x {item.quantity}
-                </span>
-                <span className="text-muted-foreground">
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-sm">
+                    {product?.name} x {item.quantity}
+                  </span>
+                </div>
+                <span className="text-sm text-muted-foreground">
                   ${((product?.price || 0) * item.quantity).toFixed(2)}
                 </span>
               </div>
@@ -74,10 +77,9 @@ const OrderSummary = ({
         </div>
 
         <div className="space-y-2">
-          <label className="text-sm font-medium">Assign Waiter</label>
           <Select value={selectedWaiter} onValueChange={onWaiterChange}>
-            <SelectTrigger className="w-full border-green-600">
-              <SelectValue placeholder="Choose a waiter" />
+            <SelectTrigger className="w-full text-sm">
+              <SelectValue placeholder="Assign Waiter" />
             </SelectTrigger>
             <SelectContent>
               {waiters.map((waiter) => (
@@ -89,8 +91,8 @@ const OrderSummary = ({
           </Select>
         </div>
 
-        <div className="pt-4">
-          <div className="flex justify-between items-center text-lg font-bold">
+        <div className="pt-2 border-t">
+          <div className="flex justify-between items-center text-base font-semibold">
             <span>Total</span>
             <span>${calculateTotal().toFixed(2)}</span>
           </div>
@@ -98,7 +100,7 @@ const OrderSummary = ({
 
         <Button
           onClick={onPlaceOrder}
-          className="w-full bg-green-600 hover:bg-green-700"
+          className="w-full bg-green-600 hover:bg-green-700 text-sm py-2"
           disabled={orderItems.length === 0 || !selectedWaiter}
         >
           Place Order
