@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import PendingOrdersList from "@/components/orders/PendingOrdersList";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -13,11 +14,13 @@ import {
   User,
   Store,
 } from "lucide-react";
+import { useState } from "react";
 
 const Sidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { user, logout } = useAuth();
+  const [isExpanded, setIsExpanded] = useState(true);
 
   const menuItems = [
     {
@@ -63,21 +66,37 @@ const Sidebar = () => {
   );
 
   return (
-    <div className="flex h-screen flex-col border-r bg-card px-4">
-      <div className="flex h-16 items-center justify-between">
-        <h2 className="text-lg font-semibold">Cafe POS</h2>
+    <div 
+      className={cn(
+        "flex h-screen flex-col border-r bg-card transition-all duration-300 ease-in-out",
+        isExpanded ? "w-64" : "w-20",
+        "group hover:w-64"
+      )}
+      onMouseEnter={() => setIsExpanded(true)}
+      onMouseLeave={() => setIsExpanded(false)}
+    >
+      <div className="flex h-16 items-center justify-between px-4">
+        <h2 className={cn(
+          "text-lg font-semibold transition-opacity duration-300",
+          !isExpanded && "group-hover:opacity-100 opacity-0"
+        )}>
+          Cafe POS
+        </h2>
       </div>
-      <div className="mb-4 flex items-center gap-2 px-2">
-        <User className="h-5 w-5" />
-        <div className="flex flex-col">
+      <div className="mb-4 flex items-center gap-2 px-4">
+        <User className="h-5 w-5 shrink-0" />
+        <div className={cn(
+          "flex flex-col transition-opacity duration-300",
+          !isExpanded && "group-hover:opacity-100 opacity-0"
+        )}>
           <span className="text-sm font-medium">{user?.name}</span>
           <span className="text-xs text-muted-foreground capitalize">
             {user?.role}
           </span>
         </div>
       </div>
-      <ScrollArea className="flex-1">
-        <nav className="grid gap-2 px-2">
+      <ScrollArea className="flex-1 px-2">
+        <nav className="grid gap-2">
           {filteredMenuItems.map((item, index) => (
             <Button
               key={index}
@@ -89,10 +108,24 @@ const Sidebar = () => {
               onClick={() => navigate(item.href)}
             >
               {item.icon}
-              {item.title}
+              <span className={cn(
+                "transition-opacity duration-300",
+                !isExpanded && "group-hover:opacity-100 opacity-0"
+              )}>
+                {item.title}
+              </span>
             </Button>
           ))}
         </nav>
+        
+        {(user?.role === "admin" || user?.role === "owner" || user?.role === "waiter") && (
+          <div className={cn(
+            "mt-6 transition-opacity duration-300",
+            !isExpanded && "group-hover:opacity-100 opacity-0"
+          )}>
+            <PendingOrdersList />
+          </div>
+        )}
       </ScrollArea>
       <div className="border-t p-4">
         <Button
@@ -101,7 +134,12 @@ const Sidebar = () => {
           onClick={logout}
         >
           <LogOut className="h-5 w-5" />
-          Logout
+          <span className={cn(
+            "transition-opacity duration-300",
+            !isExpanded && "group-hover:opacity-100 opacity-0"
+          )}>
+            Logout
+          </span>
         </Button>
       </div>
     </div>
