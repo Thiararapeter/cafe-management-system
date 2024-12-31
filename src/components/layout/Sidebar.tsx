@@ -38,15 +38,9 @@ const Sidebar = () => {
       roles: ["cashier"],
     },
     {
-      title: "All Orders",
+      title: "Uncompleted Orders",
       icon: <List className="h-5 w-5" />,
-      href: "/orders/all",
-      roles: ["cashier"],
-    },
-    {
-      title: "Complete Orders",
-      icon: <CheckCircle className="h-5 w-5" />,
-      href: "/orders/complete",
+      href: "/orders/uncompleted",
       roles: ["cashier"],
     },
     {

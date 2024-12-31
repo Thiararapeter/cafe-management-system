@@ -7,6 +7,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Orders from "./pages/Orders";
+import UncompletedOrders from "./pages/UncompletedOrders";
 import Inventory from "./pages/Inventory";
 import Analytics from "./pages/Analytics";
 import Settings from "./pages/Settings";
@@ -36,6 +37,14 @@ const App = () => (
               element={
                 <DashboardLayout>
                   <Orders />
+                </DashboardLayout>
+              }
+            />
+            <Route
+              path="/orders/uncompleted"
+              element={
+                <DashboardLayout>
+                  <UncompletedOrders />
                 </DashboardLayout>
               }
             />
