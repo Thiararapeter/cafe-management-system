@@ -13,6 +13,8 @@ import {
   LogOut,
   User,
   Store,
+  List,
+  CheckCircle,
 } from "lucide-react";
 import { useState } from "react";
 
@@ -33,6 +35,18 @@ const Sidebar = () => {
       title: "POS",
       icon: <Store className="h-5 w-5" />,
       href: "/orders",
+      roles: ["cashier"],
+    },
+    {
+      title: "All Orders",
+      icon: <List className="h-5 w-5" />,
+      href: "/orders/all",
+      roles: ["cashier"],
+    },
+    {
+      title: "Complete Orders",
+      icon: <CheckCircle className="h-5 w-5" />,
+      href: "/orders/complete",
       roles: ["cashier"],
     },
     {
