@@ -7,7 +7,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { X, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
 
 interface Product {
   id: string;
@@ -52,36 +52,36 @@ const OrderSummary = ({
   };
 
   return (
-    <Card className="shadow-lg bg-white/50 backdrop-blur-sm border-green-100">
-      <CardHeader className="py-3 border-b">
-        <CardTitle className="text-lg font-medium text-green-800">Order Summary</CardTitle>
+    <Card className="shadow-lg bg-white/50 backdrop-blur-sm border-green-100 w-full">
+      <CardHeader className="py-2 border-b">
+        <CardTitle className="text-base font-medium text-green-800">Order Summary</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4 p-4">
-        <div className="max-h-[300px] overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-green-200">
+      <CardContent className="space-y-3 p-3">
+        <div className="max-h-[400px] overflow-y-auto space-y-2 scrollbar-thin scrollbar-thumb-green-200">
           {orderItems.map((item) => {
             const product = products.find((p) => p.id === item.productId);
             return (
               <div
                 key={item.productId}
-                className="flex justify-between items-center py-2 px-3 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
+                className="flex justify-between items-center py-1.5 px-2 bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow"
               >
-                <div className="flex items-center gap-3 flex-1">
-                  <span className="font-medium text-sm text-gray-800">
+                <div className="flex items-center gap-2 flex-1">
+                  <span className="font-medium text-xs text-gray-800">
                     {product?.name} × {item.quantity}
                   </span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-green-700 font-semibold">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-green-700 font-semibold">
                     ${((product?.price || 0) * item.quantity).toFixed(2)}
                   </span>
                   {onRemoveItem && (
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-6 w-6 text-red-500 hover:text-red-700 hover:bg-red-50"
+                      className="h-5 w-5 text-red-500 hover:text-red-700 hover:bg-red-50"
                       onClick={() => onRemoveItem(item.productId)}
                     >
-                      <Trash2 className="h-4 w-4" />
+                      <Trash2 className="h-3 w-3" />
                     </Button>
                   )}
                 </div>
@@ -92,7 +92,7 @@ const OrderSummary = ({
 
         <div className="space-y-2">
           <Select value={selectedWaiter} onValueChange={onWaiterChange}>
-            <SelectTrigger className="w-full text-sm border-green-100 bg-white">
+            <SelectTrigger className="w-full text-xs border-green-100 bg-white">
               <SelectValue placeholder="Assign Waiter" />
             </SelectTrigger>
             <SelectContent>
@@ -106,7 +106,7 @@ const OrderSummary = ({
         </div>
 
         <div className="pt-2 border-t border-green-100">
-          <div className="flex justify-between items-center text-base font-semibold text-green-800">
+          <div className="flex justify-between items-center text-sm font-semibold text-green-800">
             <span>Total</span>
             <span>${calculateTotal().toFixed(2)}</span>
           </div>
@@ -114,7 +114,7 @@ const OrderSummary = ({
 
         <Button
           onClick={onPlaceOrder}
-          className="w-full bg-green-600 hover:bg-green-700 text-sm py-2 shadow-lg hover:shadow-xl transition-all"
+          className="w-full bg-green-600 hover:bg-green-700 text-xs py-2 shadow-lg hover:shadow-xl transition-all"
           disabled={orderItems.length === 0 || !selectedWaiter}
         >
           Place Order

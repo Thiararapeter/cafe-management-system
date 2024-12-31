@@ -84,13 +84,13 @@ const Orders = () => {
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto">
+    <div className="p-6 max-w-[1400px] mx-auto">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-green-800">Point of Sale</h1>
         <ShoppingCart className="h-8 w-8 text-green-600" />
       </div>
 
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-[1fr,380px] gap-6">
         <ProductSelector
           products={mockProducts}
           onAddToOrder={handleAddToOrder}
