@@ -43,6 +43,14 @@ const Orders = () => {
     });
   };
 
+  const handleRemoveItem = (productId: string) => {
+    setOrderItems(orderItems.filter(item => item.productId !== productId));
+    toast({
+      title: "Product removed",
+      description: "Product has been removed from the order",
+    });
+  };
+
   const handlePlaceOrder = () => {
     if (!selectedWaiter) {
       toast({
@@ -78,8 +86,8 @@ const Orders = () => {
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold">Orders</h1>
-        <ShoppingCart className="h-8 w-8 text-muted-foreground" />
+        <h1 className="text-3xl font-bold text-green-800">Point of Sale</h1>
+        <ShoppingCart className="h-8 w-8 text-green-600" />
       </div>
 
       <div className="grid gap-6 md:grid-cols-2">
@@ -94,6 +102,7 @@ const Orders = () => {
           selectedWaiter={selectedWaiter}
           onWaiterChange={setSelectedWaiter}
           onPlaceOrder={handlePlaceOrder}
+          onRemoveItem={handleRemoveItem}
         />
       </div>
     </div>
