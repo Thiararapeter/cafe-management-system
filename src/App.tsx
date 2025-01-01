@@ -13,8 +13,8 @@ import PrivateRoute from "./components/auth/PrivateRoute";
 
 function App() {
   return (
-    <AuthProvider>
-      <Router>
+    <Router>
+      <AuthProvider>
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route
@@ -35,8 +35,8 @@ function App() {
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
-      </Router>
-    </AuthProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 
