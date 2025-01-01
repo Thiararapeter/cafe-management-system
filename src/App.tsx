@@ -25,13 +25,14 @@ function App() {
               </PrivateRoute>
             }
           >
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/orders/uncompleted" element={<UncompletedOrders />} />
-            <Route path="/orders/all" element={<AllOrders />} />
-            <Route path="/inventory" element={<Inventory />} />
-            <Route path="/analytics" element={<Analytics />} />
-            <Route path="/settings" element={<Settings />} />
+            <Route index element={<Dashboard />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="orders" element={<Orders />} />
+            <Route path="orders/uncompleted" element={<UncompletedOrders />} />
+            <Route path="orders/all" element={<AllOrders />} />
+            <Route path="inventory" element={<Inventory />} />
+            <Route path="analytics" element={<Analytics />} />
+            <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
       </Router>
