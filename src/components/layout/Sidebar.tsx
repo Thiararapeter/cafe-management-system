@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
-import PendingOrdersList from "@/components/orders/PendingOrdersList";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -44,10 +43,10 @@ const Sidebar = () => {
       roles: ["cashier"],
     },
     {
-      title: "Orders",
+      title: "All Orders",
       icon: <ShoppingCart className="h-5 w-5" />,
-      href: "/orders",
-      roles: ["admin", "owner", "waiter"],
+      href: "/orders/all",
+      roles: ["admin", "owner"],
     },
     {
       title: "Inventory",
@@ -125,15 +124,6 @@ const Sidebar = () => {
             </Button>
           ))}
         </nav>
-        
-        {(user?.role === "admin" || user?.role === "owner" || user?.role === "waiter") && (
-          <div className={cn(
-            "mt-6 transition-opacity duration-300",
-            !isExpanded && "group-hover:opacity-100 opacity-0"
-          )}>
-            <PendingOrdersList />
-          </div>
-        )}
       </ScrollArea>
       <div className="border-t p-4">
         <Button

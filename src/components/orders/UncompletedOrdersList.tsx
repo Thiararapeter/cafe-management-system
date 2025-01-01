@@ -10,7 +10,22 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Clock, Printer } from "lucide-react";
+import { Clock, Printer, CheckCircle } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface OrderItem {
   name: string;
@@ -24,6 +39,7 @@ interface Order {
   total: number;
   timestamp: string;
   tableNumber: string;
+  status: "pending" | "completed";
 }
 
 // Mock data - replace with actual API data
@@ -36,7 +52,8 @@ const mockUncompletedOrders: Order[] = [
     ],
     total: 9.50,
     timestamp: "2024-02-20 10:30",
-    tableNumber: "A1"
+    tableNumber: "A1",
+    status: "pending"
   },
   {
     id: "2",
@@ -46,20 +63,21 @@ const mockUncompletedOrders: Order[] = [
     ],
     total: 11.00,
     timestamp: "2024-02-20 10:35",
-    tableNumber: "B2"
+    tableNumber: "B2",
+    status: "pending"
   }
 ];
 
 const UncompletedOrdersList = () => {
   const { toast } = useToast();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
+  const [mpesaCode, setMpesaCode] = useState<string>("");
+  const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
 
   const handlePrintReceipt = async (order: Order) => {
     try {
-      // Format receipt content for 88mm thermal printer
       const receiptContent = formatReceiptFor88mm(order);
-      
-      // Mock print function - replace with actual printer integration
       await printReceipt(receiptContent);
       
       toast({
@@ -76,7 +94,6 @@ const UncompletedOrdersList = () => {
   };
 
   const formatReceiptFor88mm = (order: Order) => {
-    // 88mm thermal printer typically supports 32-48 characters per line
     const maxWidth = 32;
     const separator = "-".repeat(maxWidth);
     
@@ -94,9 +111,11 @@ const UncompletedOrdersList = () => {
       ),
       separator,
       `Total: $${order.total.toFixed(2)}`,
+      `Payment Method: ${paymentMethod}`,
+      paymentMethod === "mpesa" ? `M-Pesa Code: ${mpesaCode}` : "",
       "\n",
       "Thank you for visiting!",
-      "\n\n\n" // Paper feed
+      "\n\n\n"
     ].join("\n");
 
     return receipt;
@@ -105,8 +124,46 @@ const UncompletedOrdersList = () => {
   const printReceipt = async (content: string) => {
     // Mock implementation - replace with actual printer API
     console.log("Printing receipt:", content);
-    // Simulate printing delay
     await new Promise(resolve => setTimeout(resolve, 1000));
+  };
+
+  const handleCompleteOrder = (order: Order) => {
+    setSelectedOrder(order);
+    setIsPaymentDialogOpen(true);
+  };
+
+  const handlePaymentSubmit = async () => {
+    if (!selectedOrder) return;
+
+    if (paymentMethod === "mpesa" && !mpesaCode) {
+      toast({
+        title: "Error",
+        description: "Please enter M-Pesa code",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    try {
+      // Here you would typically send the payment details to your backend
+      await handlePrintReceipt(selectedOrder);
+      
+      toast({
+        title: "Order completed",
+        description: `Order #${selectedOrder.id} has been marked as completed`,
+      });
+
+      setIsPaymentDialogOpen(false);
+      setSelectedOrder(null);
+      setPaymentMethod("");
+      setMpesaCode("");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to complete order. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -154,6 +211,14 @@ const UncompletedOrdersList = () => {
                       <Printer className="h-4 w-4 mr-1" />
                       Print
                     </Button>
+                    <Button
+                      size="sm"
+                      variant="default"
+                      onClick={() => handleCompleteOrder(order)}
+                    >
+                      <CheckCircle className="h-4 w-4 mr-1" />
+                      Complete
+                    </Button>
                   </div>
                 </TableCell>
               </TableRow>
@@ -161,6 +226,47 @@ const UncompletedOrdersList = () => {
           </TableBody>
         </Table>
       </ScrollArea>
+
+      <Dialog open={isPaymentDialogOpen} onOpenChange={setIsPaymentDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Complete Order #{selectedOrder?.id}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Payment Method</label>
+              <Select onValueChange={setPaymentMethod}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select payment method" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="cash">Cash</SelectItem>
+                  <SelectItem value="mpesa">M-Pesa</SelectItem>
+                  <SelectItem value="card">Card</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            {paymentMethod === "mpesa" && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium">M-Pesa Code</label>
+                <Input
+                  placeholder="Enter M-Pesa code"
+                  value={mpesaCode}
+                  onChange={(e) => setMpesaCode(e.target.value)}
+                />
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setIsPaymentDialogOpen(false)}>
+              Cancel
+            </Button>
+            <Button onClick={handlePaymentSubmit}>
+              Complete Order
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
