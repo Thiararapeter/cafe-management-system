@@ -13,7 +13,6 @@ import {
   User,
   Store,
   List,
-  CheckCircle,
 } from "lucide-react";
 import { useState } from "react";
 
