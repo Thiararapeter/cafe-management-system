@@ -43,7 +43,6 @@ const ProductList = ({
             <TableHead>Name</TableHead>
             <TableHead>Category</TableHead>
             <TableHead className="text-right">Price</TableHead>
-            <TableHead className="text-right">Quantity</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -55,7 +54,6 @@ const ProductList = ({
               <TableCell className="text-right">
                 ${product.price.toFixed(2)}
               </TableCell>
-              <TableCell className="text-right">{product.quantity}</TableCell>
               <TableCell className="text-right">
                 <div className="flex justify-end gap-2">
                   <Button

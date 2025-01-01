@@ -35,7 +35,6 @@ const ProductForm = ({ onSubmit, initialData, onCancel }: ProductFormProps) => {
       name: "",
       description: "",
       price: 0,
-      quantity: 0,
       category: "",
     },
   });
@@ -94,20 +93,6 @@ const ProductForm = ({ onSubmit, initialData, onCancel }: ProductFormProps) => {
                   step="0.01"
                   placeholder="0.00"
                 />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="quantity"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Quantity</FormLabel>
-              <FormControl>
-                <Input {...field} type="number" placeholder="0" />
               </FormControl>
               <FormMessage />
             </FormItem>
