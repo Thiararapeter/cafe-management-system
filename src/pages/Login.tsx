@@ -1,3 +1,5 @@
+import LoginForm from "@/components/auth/LoginForm";
+
 const Login = () => {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 p-4">
