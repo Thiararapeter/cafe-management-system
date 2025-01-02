@@ -24,6 +24,7 @@ interface Order {
   items: OrderItem[];
   total: number;
   timestamp: string;
+  tableNumber?: string;  // Made optional to match receipt.ts
   status: "pending" | "completed";
 }
 
