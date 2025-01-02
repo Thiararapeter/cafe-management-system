@@ -22,7 +22,7 @@ interface Order {
   items: Array<{ name: string; quantity: number; price: number }>;
   total: number;
   timestamp: string;
-  tableNumber: string;
+  tableNumber?: string;  // Made optional to match other interfaces
   status: "pending" | "completed";
 }
 
