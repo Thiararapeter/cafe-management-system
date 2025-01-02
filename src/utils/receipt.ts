@@ -9,7 +9,7 @@ interface Order {
   items: OrderItem[];
   total: number;
   timestamp: string;
-  tableNumber: string;
+  tableNumber?: string;  // Made optional with '?'
   status: "pending" | "completed";
 }
 
@@ -22,7 +22,7 @@ export const formatReceiptFor88mm = (order: Order, paymentMethod: string, mpesaC
     "\n",
     separator,
     `Order #: ${order.id}`,
-    `Table: ${order.tableNumber}`,
+    order.tableNumber ? `Table: ${order.tableNumber}` : "",  // Only show if tableNumber exists
     `Date: ${order.timestamp}`,
     separator,
     "Items:",
@@ -36,7 +36,7 @@ export const formatReceiptFor88mm = (order: Order, paymentMethod: string, mpesaC
     "\n",
     "Thank you for visiting!",
     "\n\n\n"
-  ].join("\n");
+  ].filter(line => line !== "").join("\n");  // Filter out empty lines
 
   return receipt;
 };
