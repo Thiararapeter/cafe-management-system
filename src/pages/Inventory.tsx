@@ -22,6 +22,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Product } from "@/types/inventory";
 import ProductForm from "@/components/inventory/ProductForm";
 import ProductList from "@/components/inventory/ProductList";
+import CategoryManagement from "@/components/settings/CategoryManagement";
 
 // Mock data - replace with actual API calls in production
 const mockProducts: Product[] = Array.from({ length: 50 }, (_, i) => ({
@@ -100,7 +101,7 @@ const Inventory = () => {
   };
 
   return (
-    <div className="p-6">
+    <div className="p-6 space-y-6">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold">Inventory</h1>
         <div className="flex items-center gap-4">
@@ -111,18 +112,26 @@ const Inventory = () => {
         </div>
       </div>
 
-      <Card>
-        <CardContent className="p-6">
-          <ProductList
-            products={currentProducts}
-            onEdit={openEditDialog}
-            onDelete={openDeleteDialog}
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={setCurrentPage}
-          />
-        </CardContent>
-      </Card>
+      <div className="grid gap-6 md:grid-cols-2">
+        <Card>
+          <CardContent className="p-6">
+            <ProductList
+              products={currentProducts}
+              onEdit={openEditDialog}
+              onDelete={openDeleteDialog}
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={setCurrentPage}
+            />
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-6">
+            <CategoryManagement />
+          </CardContent>
+        </Card>
+      </div>
 
       <Dialog
         open={isAddDialogOpen || selectedProduct !== null}
