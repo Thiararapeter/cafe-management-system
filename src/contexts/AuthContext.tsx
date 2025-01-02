@@ -54,7 +54,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         title: "Login successful",
         description: `Welcome back, ${userWithoutPassword.name}!`,
       });
-      navigate("/dashboard");
+      // Redirect cashiers to POS page, others to dashboard
+      navigate(userWithoutPassword.role === "cashier" ? "/orders" : "/dashboard");
     } else {
       toast({
         title: "Login failed",
@@ -74,7 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       {children}
     </AuthContext.Provider>
   );
-};
+}
 
 export const useAuth = () => {
   const context = useContext(AuthContext);

@@ -12,6 +12,11 @@ const PrivateRoute = ({ children }: PrivateRouteProps) => {
     return <Navigate to="/login" replace />;
   }
 
+  // Redirect cashiers to POS page if they try to access dashboard
+  if (user.role === "cashier" && window.location.pathname === "/dashboard") {
+    return <Navigate to="/orders" replace />;
+  }
+
   return <>{children}</>;
 };
 
