@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useToast } from "@/hooks/use-toast";
 import {
   Table,
@@ -59,6 +59,26 @@ const UncompletedOrdersList = () => {
   const { toast } = useToast();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
+  const [scrollHeight, setScrollHeight] = useState("600px");
+
+  // Add resize handler with debouncing
+  useEffect(() => {
+    const handleResize = () => {
+      const viewportHeight = window.innerHeight;
+      const newHeight = Math.max(400, viewportHeight - 200); // Minimum height of 400px
+      setScrollHeight(`${newHeight}px`);
+    };
+
+    // Initial height calculation
+    handleResize();
+
+    // Add event listener with passive option
+    window.addEventListener("resize", handleResize, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   const handlePrintReceipt = async (order: Order, paymentMethod: string, mpesaCode?: string) => {
     try {
@@ -124,7 +144,7 @@ const UncompletedOrdersList = () => {
         <h2 className="text-lg font-semibold">Uncompleted Orders</h2>
       </div>
       
-      <ScrollArea className="h-[600px] rounded-md border">
+      <ScrollArea className="rounded-md border" style={{ height: scrollHeight }}>
         <Table>
           <TableHeader>
             <TableRow>
