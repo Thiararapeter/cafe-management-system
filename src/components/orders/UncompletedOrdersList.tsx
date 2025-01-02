@@ -3,16 +3,15 @@ import { useToast } from "@/hooks/use-toast";
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Clock, Printer, CheckCircle } from "lucide-react";
+import { Clock } from "lucide-react";
 import { PaymentDialog } from "./PaymentDialog";
 import { formatReceiptFor88mm, printReceipt } from "@/utils/receipt";
+import UncompletedOrderItem from "./UncompletedOrderItem";
 
 interface OrderItem {
   name: string;
@@ -25,7 +24,6 @@ interface Order {
   items: OrderItem[];
   total: number;
   timestamp: string;
-  tableNumber: string;
   status: "pending" | "completed";
 }
 
@@ -39,7 +37,6 @@ const mockUncompletedOrders: Order[] = [
     ],
     total: 9.50,
     timestamp: "2024-02-20 10:30",
-    tableNumber: "A1",
     status: "pending"
   },
   {
@@ -50,7 +47,6 @@ const mockUncompletedOrders: Order[] = [
     ],
     total: 11.00,
     timestamp: "2024-02-20 10:35",
-    tableNumber: "B2",
     status: "pending"
   }
 ];
@@ -61,18 +57,14 @@ const UncompletedOrdersList = () => {
   const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
   const [scrollHeight, setScrollHeight] = useState("600px");
 
-  // Add resize handler with debouncing
   useEffect(() => {
     const handleResize = () => {
       const viewportHeight = window.innerHeight;
-      const newHeight = Math.max(400, viewportHeight - 200); // Minimum height of 400px
+      const newHeight = Math.max(400, viewportHeight - 200);
       setScrollHeight(`${newHeight}px`);
     };
 
-    // Initial height calculation
     handleResize();
-
-    // Add event listener with passive option
     window.addEventListener("resize", handleResize, { passive: true });
 
     return () => {
@@ -80,7 +72,7 @@ const UncompletedOrdersList = () => {
     };
   }, []);
 
-  const handlePrintReceipt = async (order: Order, paymentMethod: string, mpesaCode?: string) => {
+  const handlePrintReceipt = async (order: Order, paymentMethod: string = "preview", mpesaCode?: string) => {
     try {
       const receiptContent = formatReceiptFor88mm(order, paymentMethod, mpesaCode);
       await printReceipt(receiptContent);
@@ -116,11 +108,8 @@ const UncompletedOrdersList = () => {
     }
 
     try {
-      // First print the receipt
       await handlePrintReceipt(selectedOrder, paymentMethod, mpesaCode);
       
-      // Then mark the order as completed
-      // Here you would typically update the backend
       toast({
         title: "Order completed",
         description: `Order #${selectedOrder.id} has been marked as completed`,
@@ -149,7 +138,6 @@ const UncompletedOrdersList = () => {
           <TableHeader>
             <TableRow>
               <TableHead>Order #</TableHead>
-              <TableHead>Table</TableHead>
               <TableHead>Items</TableHead>
               <TableHead>Total</TableHead>
               <TableHead>Time</TableHead>
@@ -158,41 +146,12 @@ const UncompletedOrdersList = () => {
           </TableHeader>
           <TableBody>
             {mockUncompletedOrders.map((order) => (
-              <TableRow key={order.id}>
-                <TableCell>{order.id}</TableCell>
-                <TableCell>{order.tableNumber}</TableCell>
-                <TableCell>
-                  <div className="max-w-[200px]">
-                    {order.items.map((item, index) => (
-                      <div key={index} className="text-sm">
-                        {item.quantity}x {item.name}
-                      </div>
-                    ))}
-                  </div>
-                </TableCell>
-                <TableCell>${order.total.toFixed(2)}</TableCell>
-                <TableCell>{order.timestamp}</TableCell>
-                <TableCell>
-                  <div className="flex gap-2">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handlePrintReceipt(order, "preview")}
-                    >
-                      <Printer className="h-4 w-4 mr-1" />
-                      Print
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="default"
-                      onClick={() => handleCompleteOrder(order)}
-                    >
-                      <CheckCircle className="h-4 w-4 mr-1" />
-                      Complete
-                    </Button>
-                  </div>
-                </TableCell>
-              </TableRow>
+              <UncompletedOrderItem
+                key={order.id}
+                order={order}
+                onPrintReceipt={() => handlePrintReceipt(order)}
+                onCompleteOrder={() => handleCompleteOrder(order)}
+              />
             ))}
           </TableBody>
         </Table>
