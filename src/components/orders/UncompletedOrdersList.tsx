@@ -11,21 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Clock, Printer, CheckCircle } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { PaymentDialog } from "./PaymentDialog";
+import { formatReceiptFor88mm, printReceipt } from "@/utils/receipt";
 
 interface OrderItem {
   name: string;
@@ -71,13 +58,11 @@ const mockUncompletedOrders: Order[] = [
 const UncompletedOrdersList = () => {
   const { toast } = useToast();
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState<string>("");
-  const [mpesaCode, setMpesaCode] = useState<string>("");
   const [isPaymentDialogOpen, setIsPaymentDialogOpen] = useState(false);
 
-  const handlePrintReceipt = async (order: Order) => {
+  const handlePrintReceipt = async (order: Order, paymentMethod: string, mpesaCode?: string) => {
     try {
-      const receiptContent = formatReceiptFor88mm(order);
+      const receiptContent = formatReceiptFor88mm(order, paymentMethod, mpesaCode);
       await printReceipt(receiptContent);
       
       toast({
@@ -93,46 +78,12 @@ const UncompletedOrdersList = () => {
     }
   };
 
-  const formatReceiptFor88mm = (order: Order) => {
-    const maxWidth = 32;
-    const separator = "-".repeat(maxWidth);
-    
-    let receipt = [
-      "Cafe POS".padStart((maxWidth + 8) / 2),
-      "\n",
-      separator,
-      `Order #: ${order.id}`,
-      `Table: ${order.tableNumber}`,
-      `Date: ${order.timestamp}`,
-      separator,
-      "Items:",
-      ...order.items.map(item => 
-        `${item.quantity}x ${item.name.padEnd(20)} $${item.price.toFixed(2)}`
-      ),
-      separator,
-      `Total: $${order.total.toFixed(2)}`,
-      `Payment Method: ${paymentMethod}`,
-      paymentMethod === "mpesa" ? `M-Pesa Code: ${mpesaCode}` : "",
-      "\n",
-      "Thank you for visiting!",
-      "\n\n\n"
-    ].join("\n");
-
-    return receipt;
-  };
-
-  const printReceipt = async (content: string) => {
-    // Mock implementation - replace with actual printer API
-    console.log("Printing receipt:", content);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  };
-
   const handleCompleteOrder = (order: Order) => {
     setSelectedOrder(order);
     setIsPaymentDialogOpen(true);
   };
 
-  const handlePaymentSubmit = async () => {
+  const handlePaymentSubmit = async (paymentMethod: string, mpesaCode: string) => {
     if (!selectedOrder) return;
 
     if (paymentMethod === "mpesa" && !mpesaCode) {
@@ -145,9 +96,11 @@ const UncompletedOrdersList = () => {
     }
 
     try {
-      // Here you would typically send the payment details to your backend
-      await handlePrintReceipt(selectedOrder);
+      // First print the receipt
+      await handlePrintReceipt(selectedOrder, paymentMethod, mpesaCode);
       
+      // Then mark the order as completed
+      // Here you would typically update the backend
       toast({
         title: "Order completed",
         description: `Order #${selectedOrder.id} has been marked as completed`,
@@ -155,8 +108,6 @@ const UncompletedOrdersList = () => {
 
       setIsPaymentDialogOpen(false);
       setSelectedOrder(null);
-      setPaymentMethod("");
-      setMpesaCode("");
     } catch (error) {
       toast({
         title: "Error",
@@ -206,7 +157,7 @@ const UncompletedOrdersList = () => {
                     <Button
                       size="sm"
                       variant="outline"
-                      onClick={() => handlePrintReceipt(order)}
+                      onClick={() => handlePrintReceipt(order, "preview")}
                     >
                       <Printer className="h-4 w-4 mr-1" />
                       Print
@@ -227,46 +178,12 @@ const UncompletedOrdersList = () => {
         </Table>
       </ScrollArea>
 
-      <Dialog open={isPaymentDialogOpen} onOpenChange={setIsPaymentDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Complete Order #{selectedOrder?.id}</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Payment Method</label>
-              <Select onValueChange={setPaymentMethod}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select payment method" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="cash">Cash</SelectItem>
-                  <SelectItem value="mpesa">M-Pesa</SelectItem>
-                  <SelectItem value="card">Card</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            {paymentMethod === "mpesa" && (
-              <div className="space-y-2">
-                <label className="text-sm font-medium">M-Pesa Code</label>
-                <Input
-                  placeholder="Enter M-Pesa code"
-                  value={mpesaCode}
-                  onChange={(e) => setMpesaCode(e.target.value)}
-                />
-              </div>
-            )}
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsPaymentDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button onClick={handlePaymentSubmit}>
-              Complete Order
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <PaymentDialog
+        isOpen={isPaymentDialogOpen}
+        onClose={() => setIsPaymentDialogOpen(false)}
+        selectedOrder={selectedOrder}
+        onPaymentSubmit={handlePaymentSubmit}
+      />
     </div>
   );
 };
