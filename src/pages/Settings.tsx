@@ -7,7 +7,6 @@ import { useAuth } from "@/contexts/AuthContext";
 
 const Settings = () => {
   const { user } = useAuth();
-  const isOwner = user?.role === "owner";
 
   return (
     <div className="p-6">
@@ -21,7 +20,6 @@ const Settings = () => {
             <TabsList>
               <TabsTrigger value="users">Users</TabsTrigger>
               <TabsTrigger value="cafe">Cafe Settings</TabsTrigger>
-              {isOwner && <TabsTrigger value="system">System</TabsTrigger>}
             </TabsList>
             <TabsContent value="users">
               <UserManagement />
@@ -29,13 +27,6 @@ const Settings = () => {
             <TabsContent value="cafe">
               <CafeSettings />
             </TabsContent>
-            {isOwner && (
-              <TabsContent value="system">
-                <div className="text-muted-foreground">
-                  System settings will be implemented in a future update.
-                </div>
-              </TabsContent>
-            )}
           </Tabs>
         </CardContent>
       </Card>
